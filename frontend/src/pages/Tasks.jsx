@@ -54,7 +54,7 @@ function Tasks() {
     try {
 
       const response = await axios.get(
-        "https://ingete-backend.onrender.com/register"
+        "https://ingete-backend.onrender.com/register",
       )
 
       setTasks(response.data)
