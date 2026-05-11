@@ -39,9 +39,10 @@ function Tasks() {
 
   const [tasks, setTasks] =
     useState([])
+
   const [search, setSearch] =
-  useState("")
-  
+    useState("")
+
   const [editingId, setEditingId] =
     useState(null)
 
@@ -54,7 +55,7 @@ function Tasks() {
     try {
 
       const response = await axios.get(
-        "https://ingete-backend.onrender.com/register",
+        "https://ingete-backend.onrender.com/tasks"
       )
 
       setTasks(response.data)
@@ -83,18 +84,13 @@ function Tasks() {
 
       await axios.post(
 
-        "https://ingete-backend.onrender.com/register",
+        "https://ingete-backend.onrender.com/tasks",
 
         {
-
           titulo,
-
           responsable,
-
           estado,
-
           fecha
-
         }
 
       )
@@ -125,7 +121,7 @@ function Tasks() {
     try {
 
       await axios.delete(
-        `https://ingete-backend.onrender.com/register/${id}`
+        `https://ingete-backend.onrender.com/tasks/${id}`
       )
 
       getTasks()
@@ -138,71 +134,79 @@ function Tasks() {
 
   }
 
+  // =========================
+  // ACTUALIZAR TAREA
+  // =========================
 
   const updateTask = async () => {
 
-  try {
+    try {
 
-    await axios.put(
+      await axios.put(
 
-      `https://ingete-backend.onrender.com/register/${editingId}`,
+        `https://ingete-backend.onrender.com/tasks/${editingId}`,
 
-      {
+        {
+          titulo,
+          responsable,
+          estado,
+          fecha
+        }
 
-        titulo,
+      )
 
-        responsable,
+      alert("Tarea actualizada")
 
-        estado,
+      setTitulo("")
+      setResponsable("")
+      setEstado("")
+      setFecha("")
 
-        fecha
+      setEditingId(null)
 
-      }
+      getTasks()
 
-    )
+    } catch (error) {
 
-    alert("Tarea actualizada")
+      console.log(error)
 
-    setTitulo("")
-    setResponsable("")
-    setEstado("")
-    setFecha("")
-
-    setEditingId(null)
-
-    getTasks()
-
-  } catch (error) {
-
-    console.log(error)
+    }
 
   }
 
-}
+  // =========================
+  // EDITAR TAREA
+  // =========================
 
   const editTask = (task) => {
 
-  setTitulo(task.titulo)
+    setTitulo(task.titulo)
 
-  setResponsable(task.responsable)
+    setResponsable(task.responsable)
 
-  setEstado(task.estado)
+    setEstado(task.estado)
 
-  setFecha(task.fecha)
+    setFecha(
+      task.fecha?.split("T")[0]
+    )
 
-  setEditingId(task.id)
+    setEditingId(task.id)
 
-}
+  }
 
-const filteredTasks =
+  // =========================
+  // FILTRAR
+  // =========================
 
-  tasks.filter((task) =>
+  const filteredTasks =
 
-    task.titulo
-      .toLowerCase()
-      .includes(search.toLowerCase())
+    tasks.filter((task) =>
 
-  )
+      task.titulo
+        .toLowerCase()
+        .includes(search.toLowerCase())
+
+    )
 
   return (
 
@@ -273,23 +277,23 @@ const filteredTasks =
 
         <div className="mt-6 mb-6">
 
-  <input
+          <input
 
-    type="text"
+            type="text"
 
-    placeholder="Buscar tarea..."
+            placeholder="Buscar tarea..."
 
-    value={search}
+            value={search}
 
-    onChange={(e) =>
-      setSearch(e.target.value)
-    }
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
 
-    className="w-full border p-4 rounded-xl text-black"
+            className="w-full border p-4 rounded-xl text-black"
 
-  />
+          />
 
-</div>
+        </div>
 
         {/* FORMULARIO */}
 
@@ -305,7 +309,12 @@ const filteredTasks =
         `}>
 
           <h3 className="text-3xl font-bold mb-6">
-            Registrar Tarea
+
+            {editingId
+              ? "Editar Tarea"
+              : "Registrar Tarea"
+            }
+
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -369,22 +378,22 @@ const filteredTasks =
 
           <button
 
-  onClick={
-    editingId
-      ? updateTask
-      : saveTask
-  }
+            onClick={
+              editingId
+                ? updateTask
+                : saveTask
+            }
 
-  className="bg-blue-700 text-white px-8 py-3 rounded-xl mt-6 hover:bg-blue-800"
+            className="bg-blue-700 text-white px-8 py-3 rounded-xl mt-6"
 
->
+          >
 
-  {editingId
-    ? "Actualizar Tarea"
-    : "Guardar Tarea"
-  }
+            {editingId
+              ? "Actualizar Tarea"
+              : "Guardar Tarea"
+            }
 
-</button>
+          </button>
 
         </div>
 
@@ -407,29 +416,12 @@ const filteredTasks =
 
               <tr>
 
-                <th className="p-4">
-                  ID
-                </th>
-
-                <th className="p-4">
-                  Título
-                </th>
-
-                <th className="p-4">
-                  Responsable
-                </th>
-
-                <th className="p-4">
-                  Estado
-                </th>
-
-                <th className="p-4">
-                  Fecha
-                </th>
-
-                <th className="p-4">
-                  Acciones
-                </th>
+                <th className="p-4">ID</th>
+                <th className="p-4">Título</th>
+                <th className="p-4">Responsable</th>
+                <th className="p-4">Estado</th>
+                <th className="p-4">Fecha</th>
+                <th className="p-4">Acciones</th>
 
               </tr>
 
@@ -461,38 +453,34 @@ const filteredTasks =
                   </td>
 
                   <td className="p-4">
-                    {task.fecha}
+                    {task.fecha?.split("T")[0]}
                   </td>
 
-                  <td className="p-4">
+                  <td className="p-4 space-x-2">
 
-                    <td className="p-4 space-x-2">
+                    <button
 
-  <button
+                      onClick={() =>
+                        editTask(task)
+                      }
 
-    onClick={() =>
-      editTask(task)
-    }
+                      className="bg-yellow-500 text-white px-4 py-2 rounded-lg"
 
-    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+                    >
+                      Editar
+                    </button>
 
-  >
-    Editar
-  </button>
+                    <button
 
-  <button
+                      onClick={() =>
+                        deleteTask(task.id)
+                      }
 
-    onClick={() =>
-      deleteTask(task.id)
-    }
+                      className="bg-red-600 text-white px-4 py-2 rounded-lg"
 
-    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-
-  >
-    Eliminar
-  </button>
-
-</td>
+                    >
+                      Eliminar
+                    </button>
 
                   </td>
 
