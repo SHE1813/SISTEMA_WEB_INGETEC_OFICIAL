@@ -14,91 +14,48 @@ app.use(express.json())
 // LOGIN
 // ==========================
 
+const bcrypt = require("bcrypt")
+
 app.post("/login", (req, res) => {
 
   const { email, password } = req.body
 
-  const sql =
-    "SELECT * FROM users WHERE email = ?"
+  const sql = "SELECT * FROM users WHERE email = ?"
 
-  db.query(sql, [email], (error, results) => {
+  db.query(sql, [email], async (err, result) => {
 
-    if (error) {
-
-      console.log(error)
-
-      return res.status(500).json({
-
-        success: false,
-
-        message: "Error del servidor"
-
-      })
-
+    if (err) {
+      return res.status(500).json(err)
     }
 
-    if (results.length === 0) {
+    if (result.length === 0) {
 
-      return res.status(401).json({
-
+      return res.json({
         success: false,
-
         message: "Usuario no encontrado"
-
       })
 
     }
 
-    const user = results[0]
+    const user = result[0]
 
-    const validPassword =
-      bcrypt.compareSync(
-        String(password),
-        String(user.password)
-      )
+    const validPassword = await bcrypt.compare(
+      password,
+      user.password
+    )
 
     if (!validPassword) {
 
-      return res.status(401).json({
-
+      return res.json({
         success: false,
-
-        message: "Contraseña incorrecta"
-
+        message: "Credenciales incorrectas"
       })
 
     }
 
-    const token = jwt.sign(
-
-      {
-        id: user.id
-      },
-
-      "CLAVE_SECRETA",
-
-      {
-        expiresIn: "1d"
-      }
-
-    )
-
     res.json({
-
       success: true,
-
-      message: "Login correcto",
-
-      token,
-
-      user: {
-
-        id: user.id,
-
-        email: user.email
-
-      }
-
+      user
     })
 
   })
