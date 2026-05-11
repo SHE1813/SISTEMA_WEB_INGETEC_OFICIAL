@@ -14,8 +14,6 @@ app.use(express.json())
 // LOGIN
 // ==========================
 
-const bcrypt = require("bcrypt")
-
 app.post("/login", (req, res) => {
 
   const { email, password } = req.body
