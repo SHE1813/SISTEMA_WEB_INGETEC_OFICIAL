@@ -35,6 +35,7 @@ import {
 function Dashboard() {
 
   const navigate = useNavigate()
+  const { darkMode, setDarkMode } = useContext(ThemeContext)
 
   const user = JSON.parse(
     localStorage.getItem("user")
