@@ -535,14 +535,123 @@ app.delete("/tasks/:id", (req, res) => {
   })
 
 })
+// ==========================
+// TASKS
+// ==========================
+
+// OBTENER
+app.get("/tasks", async (req, res) => {
+
+  try {
+
+    const [rows] = await db.query(
+      "SELECT * FROM tasks"
+    )
+
+    res.json(rows)
+
+  } catch (error) {
+
+    res.status(500).json(error)
+
+  }
+
+})
+
+// GUARDAR
+app.post("/tasks", async (req, res) => {
+
+  try {
+
+    const {
+      titulo,
+      responsable,
+      estado,
+      fecha
+    } = req.body
+
+    await db.query(
+
+      "INSERT INTO tasks (titulo, responsable, estado, fecha) VALUES (?, ?, ?, ?)",
+
+      [titulo, responsable, estado, fecha]
+
+    )
+
+    res.json({
+      success: true
+    })
+
+  } catch (error) {
+
+    res.status(500).json(error)
+
+  }
+
+})
+
+// ACTUALIZAR
+app.put("/tasks/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+
+    const {
+      titulo,
+      responsable,
+      estado,
+      fecha
+    } = req.body
+
+    await db.query(
+
+      "UPDATE tasks SET titulo=?, responsable=?, estado=?, fecha=? WHERE id=?",
+
+      [titulo, responsable, estado, fecha, id]
+
+    )
+
+    res.json({
+      success: true
+    })
+
+  } catch (error) {
+
+    res.status(500).json(error)
+
+  }
+
+})
+
+// ELIMINAR
+app.delete("/tasks/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+
+    await db.query(
+      "DELETE FROM tasks WHERE id=?",
+      [id]
+    )
+
+    res.json({
+      success: true
+    })
+
+  } catch (error) {
+
+    res.status(500).json(error)
+
+  }
+
+})
 
 // ==========================
 // DASHBOARD
 // ==========================
 
-// ==========================
-// DASHBOARD
-// ==========================
 
 app.get("/dashboard", (req, res) => {
 
