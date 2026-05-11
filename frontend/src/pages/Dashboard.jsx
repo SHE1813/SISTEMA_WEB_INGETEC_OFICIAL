@@ -87,7 +87,7 @@ function Dashboard() {
     try {
 
       const response = await axios.get(
-        "http://localhost:3000/dashboard"
+        "https://ingete-backend.onrender.com/dashboard"
       )
 
       setStats(response.data)
