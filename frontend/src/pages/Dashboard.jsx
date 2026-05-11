@@ -40,15 +40,6 @@ function Dashboard() {
   const user = JSON.parse(
     localStorage.getItem("user")
   )
-
-  const theme = useContext(ThemeContext)
-
-  const darkMode =
-    theme?.darkMode || false
-
-  const setDarkMode =
-    theme?.setDarkMode || (() => {})
-
   const [stats, setStats] = useState({
 
     proyectos: 0,
