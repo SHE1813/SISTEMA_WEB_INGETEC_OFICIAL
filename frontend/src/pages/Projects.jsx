@@ -50,7 +50,7 @@ function Projects() {
     try {
 
       const response = await axios.get(
-        "https://ingete-backend.onrender.com/register"
+        "https://ingete-backend.onrender.com/projects"
       )
 
       setProjects(response.data)
@@ -88,7 +88,7 @@ function Projects() {
     try {
 
       await axios.post(
-        "http://localhost:3000/projects",
+        "https://ingete-backend.onrender.com/projects",
         form
       )
 
@@ -135,7 +135,7 @@ function Projects() {
 
       await axios.put(
 
-        `http://localhost:3000/projects/${editingId}`,
+        `https://ingete-backend.onrender.com/projects/${editingId}`,
 
         form
 
@@ -170,7 +170,7 @@ function Projects() {
     try {
 
       await axios.delete(
-        `http://localhost:3000/projects/${id}`
+        `https://ingete-backend.onrender.com/projects/${id}`,
       )
 
       alert("Proyecto eliminado")
