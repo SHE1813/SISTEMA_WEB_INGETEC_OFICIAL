@@ -1,7 +1,6 @@
 const express = require("express")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
 
 const db = require("./db")
 
@@ -18,7 +17,8 @@ app.post("/login", (req, res) => {
 
   const { email, password } = req.body
 
-  const sql = "SELECT * FROM users WHERE email = ?"
+  const sql =
+    "SELECT * FROM users WHERE email = ?"
 
   db.query(sql, [email], async (err, result) => {
 
@@ -103,7 +103,6 @@ app.post("/register", async (req, res) => {
           return res.status(500).json({
 
             success: false,
-
             message: "Error al registrar usuario"
 
           })
@@ -113,7 +112,6 @@ app.post("/register", async (req, res) => {
         res.json({
 
           success: true,
-
           message: "Usuario registrado correctamente"
 
         })
@@ -127,9 +125,7 @@ app.post("/register", async (req, res) => {
     console.log(error)
 
     res.status(500).json({
-
       success: false
-
     })
 
   }
@@ -166,21 +162,15 @@ app.get("/projects", (req, res) => {
 app.post("/projects", (req, res) => {
 
   const {
-
     nombre,
-
     responsable,
-
     estado,
-
     fecha
-
   } = req.body
 
   const sql = `
 
     INSERT INTO projects
-
     (nombre, responsable, estado, fecha)
 
     VALUES (?, ?, ?, ?)
@@ -192,15 +182,10 @@ app.post("/projects", (req, res) => {
     sql,
 
     [
-
       nombre,
-
       responsable,
-
       estado,
-
       fecha
-
     ],
 
     (error, result) => {
@@ -216,7 +201,6 @@ app.post("/projects", (req, res) => {
       res.json({
 
         success: true,
-
         mensaje: "Proyecto guardado"
 
       })
@@ -236,15 +220,10 @@ app.put("/projects/:id", (req, res) => {
   const { id } = req.params
 
   const {
-
     nombre,
-
     responsable,
-
     estado,
-
     fecha
-
   } = req.body
 
   const sql = `
@@ -252,13 +231,9 @@ app.put("/projects/:id", (req, res) => {
     UPDATE projects
 
     SET
-
       nombre = ?,
-
       responsable = ?,
-
       estado = ?,
-
       fecha = ?
 
     WHERE id = ?
@@ -270,17 +245,11 @@ app.put("/projects/:id", (req, res) => {
     sql,
 
     [
-
       nombre,
-
       responsable,
-
       estado,
-
       fecha,
-
       id
-
     ],
 
     (error, result) => {
@@ -294,7 +263,6 @@ app.put("/projects/:id", (req, res) => {
       res.json({
 
         success: true,
-
         mensaje: "Proyecto actualizado"
 
       })
@@ -327,7 +295,6 @@ app.delete("/projects/:id", (req, res) => {
     res.json({
 
       success: true,
-
       mensaje: "Proyecto eliminado"
 
     })
@@ -366,21 +333,15 @@ app.get("/tasks", (req, res) => {
 app.post("/tasks", (req, res) => {
 
   const {
-
     titulo,
-
     responsable,
-
     estado,
-
     fecha
-
   } = req.body
 
   const sql = `
 
     INSERT INTO tasks
-
     (titulo, responsable, estado, fecha)
 
     VALUES (?, ?, ?, ?)
@@ -392,15 +353,10 @@ app.post("/tasks", (req, res) => {
     sql,
 
     [
-
       titulo,
-
       responsable,
-
       estado,
-
       fecha
-
     ],
 
     (error, result) => {
@@ -416,7 +372,6 @@ app.post("/tasks", (req, res) => {
       res.json({
 
         success: true,
-
         mensaje: "Tarea guardada"
 
       })
@@ -436,15 +391,10 @@ app.put("/tasks/:id", (req, res) => {
   const { id } = req.params
 
   const {
-
     titulo,
-
     responsable,
-
     estado,
-
     fecha
-
   } = req.body
 
   const sql = `
@@ -452,13 +402,9 @@ app.put("/tasks/:id", (req, res) => {
     UPDATE tasks
 
     SET
-
       titulo = ?,
-
       responsable = ?,
-
       estado = ?,
-
       fecha = ?
 
     WHERE id = ?
@@ -470,17 +416,11 @@ app.put("/tasks/:id", (req, res) => {
     sql,
 
     [
-
       titulo,
-
       responsable,
-
       estado,
-
       fecha,
-
       id
-
     ],
 
     (error, result) => {
@@ -494,7 +434,6 @@ app.put("/tasks/:id", (req, res) => {
       res.json({
 
         success: true,
-
         mensaje: "Tarea actualizada"
 
       })
@@ -527,7 +466,6 @@ app.delete("/tasks/:id", (req, res) => {
     res.json({
 
       success: true,
-
       mensaje: "Tarea eliminada"
 
     })
@@ -535,123 +473,10 @@ app.delete("/tasks/:id", (req, res) => {
   })
 
 })
-// ==========================
-// TASKS
-// ==========================
-
-// OBTENER
-app.get("/tasks", async (req, res) => {
-
-  try {
-
-    const [rows] = await db.query(
-      "SELECT * FROM tasks"
-    )
-
-    res.json(rows)
-
-  } catch (error) {
-
-    res.status(500).json(error)
-
-  }
-
-})
-
-// GUARDAR
-app.post("/tasks", async (req, res) => {
-
-  try {
-
-    const {
-      titulo,
-      responsable,
-      estado,
-      fecha
-    } = req.body
-
-    await db.query(
-
-      "INSERT INTO tasks (titulo, responsable, estado, fecha) VALUES (?, ?, ?, ?)",
-
-      [titulo, responsable, estado, fecha]
-
-    )
-
-    res.json({
-      success: true
-    })
-
-  } catch (error) {
-
-    res.status(500).json(error)
-
-  }
-
-})
-
-// ACTUALIZAR
-app.put("/tasks/:id", async (req, res) => {
-
-  try {
-
-    const { id } = req.params
-
-    const {
-      titulo,
-      responsable,
-      estado,
-      fecha
-    } = req.body
-
-    await db.query(
-
-      "UPDATE tasks SET titulo=?, responsable=?, estado=?, fecha=? WHERE id=?",
-
-      [titulo, responsable, estado, fecha, id]
-
-    )
-
-    res.json({
-      success: true
-    })
-
-  } catch (error) {
-
-    res.status(500).json(error)
-
-  }
-
-})
-
-// ELIMINAR
-app.delete("/tasks/:id", async (req, res) => {
-
-  try {
-
-    const { id } = req.params
-
-    await db.query(
-      "DELETE FROM tasks WHERE id=?",
-      [id]
-    )
-
-    res.json({
-      success: true
-    })
-
-  } catch (error) {
-
-    res.status(500).json(error)
-
-  }
-
-})
 
 // ==========================
 // DASHBOARD
 // ==========================
-
 
 app.get("/dashboard", (req, res) => {
 
@@ -669,7 +494,6 @@ app.get("/dashboard", (req, res) => {
     SELECT * FROM tasks
 
     WHERE estado = 'Pendiente'
-
     AND fecha < CURDATE()
 
   `
@@ -679,14 +503,9 @@ app.get("/dashboard", (req, res) => {
     SELECT * FROM projects
 
     WHERE estado != 'Completado'
-
     AND fecha < CURDATE()
 
   `
-
-  // =========================
-  // TOTAL PROYECTOS
-  // =========================
 
   db.query(sqlProjects, (error, projectResult) => {
 
@@ -696,10 +515,6 @@ app.get("/dashboard", (req, res) => {
 
     }
 
-    // =========================
-    // TOTAL TAREAS
-    // =========================
-
     db.query(sqlTasks, (error, taskResult) => {
 
       if (error) {
@@ -707,10 +522,6 @@ app.get("/dashboard", (req, res) => {
         return res.status(500).json(error)
 
       }
-
-      // =========================
-      // TAREAS PENDIENTES
-      // =========================
 
       db.query(sqlPending, (error, pendingResult) => {
 
@@ -720,10 +531,6 @@ app.get("/dashboard", (req, res) => {
 
         }
 
-        // =========================
-        // TAREAS RETRASADAS
-        // =========================
-
         db.query(sqlDelayedTasks, (error, delayedTasks) => {
 
           if (error) {
@@ -732,10 +539,6 @@ app.get("/dashboard", (req, res) => {
 
           }
 
-          // =========================
-          // PROYECTOS RETRASADOS
-          // =========================
-
           db.query(sqlDelayedProjects, (error, delayedProjects) => {
 
             if (error) {
@@ -743,10 +546,6 @@ app.get("/dashboard", (req, res) => {
               return res.status(500).json(error)
 
             }
-
-            // =========================
-            // RESPUESTA FINAL
-            // =========================
 
             res.json({
 
@@ -791,14 +590,13 @@ app.get("/dashboard", (req, res) => {
 // SERVIDOR
 // ==========================
 
-const PORT = process.env.PORT || 3000
+const PORT =
+  process.env.PORT || 3000
 
 app.listen(PORT, () => {
 
   console.log(
-
     `Servidor ejecutándose en puerto ${PORT}`
-
   )
 
 })
